@@ -93,14 +93,18 @@ sau khi thêm khóa xác nhận API đã hoạt động.
 ## Ảnh Chụp Màn Hình
 
 - `screenshots/dashboard.png`: dashboard Render, URL HTTPS và trạng thái Live.
+- `screenshots/health.png`: kết quả /health trên domain Render, status ok.
+- `screenshots/ready.png`: kết quả /ready trên domain Render, Redis true.
+- `screenshots/docs.png`: giao diện tài liệu API /docs trên Render.
 - `screenshots/image.png`: minh chứng Docker local trong giai đoạn chuẩn bị.
 - `screenshots/health-local.png`: /health HTTP 200 ở localhost.
 - `screenshots/ready-local.png`: /ready HTTP 200 ở localhost.
 
 ![Render service Live](screenshots/dashboard.png)
 
-Để bổ sung minh chứng endpoint cloud, chụp kết quả /health và /ready trên
-trình duyệt vào screenshots/health.png.
+![Cloud health](screenshots/health.png)
+
+![Cloud readiness](screenshots/ready.png)
 
 ## Giới Hạn Gói Free
 
