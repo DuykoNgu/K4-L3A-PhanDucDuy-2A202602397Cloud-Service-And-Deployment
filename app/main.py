@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 from functools import lru_cache
+from typing import AsyncIterator
 
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
@@ -55,8 +56,10 @@ def get_cost_guard() -> CostGuard:
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     """CHO SẴN — chạy lúc app khởi động và lúc tắt."""
+    get_settings()
+    lifecycle.shutting_down = False
     lifecycle.install()
     log_event("service_started", service=SERVICE_NAME, version=SERVICE_VERSION)
     yield
@@ -74,7 +77,7 @@ class AskRequest(BaseModel):
 # Health & readiness
 # ─────────────────────────────────────────────────────────────
 @app.get("/health")
-def health():
+def health() -> JSONResponse:
     """Liveness probe — process còn sống không?
 
     TODO (CP1 + CP4):
@@ -87,7 +90,11 @@ def health():
     lời câu hỏi "có cần restart container này không?". Nếu nó phụ thuộc
     Redis, Redis chết một nhịp là cả cụm container bị restart theo.
     """
-    raise NotImplementedError("TODO (CP1/CP4): cài đặt /health")
+    if lifecycle.shutting_down:
+        return JSONResponse(status_code=503, content={"status": "shutting_down"})
+    return JSONResponse(
+        content={"status": "ok", "service": SERVICE_NAME, "version": SERVICE_VERSION}
+    )
 
 
 @app.get("/ready")
